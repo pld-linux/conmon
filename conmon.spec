@@ -1,12 +1,12 @@
 Summary:	OCI container runtime monitor
 Name:		conmon
-Version:	2.0.20
+Version:	2.0.21
 Release:	1
 License:	Apache v2.0
 Group:		Applications/System
 #Source0Download: https://github.com/containers/conmon/releases
 Source0:	https://github.com/containers/conmon/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	e4690a6561db1ae348d59c163108508e
+# Source0-md5:	c642c9460b4e8a8f0b1e3c5a8f349530
 URL:		https://github.com/containers/conmon
 BuildRequires:	glib2-devel
 BuildRequires:	pkgconfig
