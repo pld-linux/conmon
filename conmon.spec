@@ -9,6 +9,7 @@ Source0:	https://github.com/containers/conmon/archive/v%{version}/%{name}-%{vers
 # Source0-md5:	e82a8ef3e184db4a5a872e4d0cd7061e
 URL:		https://github.com/containers/conmon
 BuildRequires:	glib2-devel
+BuildRequires:	go-md2man
 BuildRequires:	libseccomp-devel
 BuildRequires:	pkgconfig
 BuildRequires:	systemd-devel
@@ -22,11 +23,19 @@ or crun) for a single container.
 %prep
 %setup -q
 
+%{__rm} -r tools/vendor
+
 %build
+# prevent build of go-md2man
+install -d tools/build
+: > tools/build/go-md2man
 %{__make} \
 	CC="%{__cc}" \
 	CFLAGS="%{rpmcppflags} %{rpmcflags}" \
-	LDLAGS="%{rpmldflags}"
+	LDLAGS="%{rpmldflags}" \
+
+%{__make} docs \
+        GOMD2MAN=/usr/bin/go-md2man
 
 %install
 rm -rf $RPM_BUILD_ROOT
