@@ -1,18 +1,19 @@
 Summary:	OCI container runtime monitor
 Name:		conmon
-Version:	2.1.2
+Version:	2.1.3
 Release:	1
 License:	Apache v2.0
 Group:		Applications/System
 #Source0Download: https://github.com/containers/conmon/releases
 Source0:	https://github.com/containers/conmon/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	3bdc8279992e1a95de56a8f1d36c3542
+# Source0-md5:	be20a5df954717ffcbc2d5c4f2d194ad
 URL:		https://github.com/containers/conmon
 BuildRequires:	glib2-devel
 BuildRequires:	go-md2man
-BuildRequires:	libseccomp-devel
+BuildRequires:	libseccomp-devel >= 2.5.2
 BuildRequires:	pkgconfig
 BuildRequires:	systemd-devel
+Requires:	libseccomp >= 2.5.2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
