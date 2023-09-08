@@ -1,7 +1,14 @@
+#
+# Conditional build:
+%bcond_without	docs		# Don't build man page (requires go arch)
+#
+%ifarch x32
+%undefine	with_docs
+%endif
 Summary:	OCI container runtime monitor
 Name:		conmon
 Version:	2.1.8
-Release:	1
+Release:	2
 License:	Apache v2.0
 Group:		Applications/System
 #Source0Download: https://github.com/containers/conmon/releases
@@ -9,7 +16,7 @@ Source0:	https://github.com/containers/conmon/archive/v%{version}/%{name}-%{vers
 # Source0-md5:	753a2d554c6b5c55c93f069a20d9ebf9
 URL:		https://github.com/containers/conmon
 BuildRequires:	glib2-devel
-BuildRequires:	go-md2man
+%{?with_docs:BuildRequires:	go-md2man}
 BuildRequires:	libseccomp-devel >= 2.5.2
 BuildRequires:	pkgconfig
 BuildRequires:	systemd-devel
@@ -35,17 +42,27 @@ install -d tools/build
 	CFLAGS="%{rpmcppflags} %{rpmcflags}" \
 	LDLAGS="%{rpmldflags}" \
 
+%if %{with docs}
 %{__make} docs \
-        GOMD2MAN=/usr/bin/go-md2man
+	GOMD2MAN=/usr/bin/go-md2man
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
+%{__make} install.bin \
 	DESTDIR=$RPM_BUILD_ROOT \
-        PREFIX=%{_prefix} \
-        BINDIR=%{_bindir} \
-        LIBEXECDIR=%{_libexecdir}
+	PREFIX=%{_prefix} \
+	BINDIR=%{_bindir} \
+	LIBEXECDIR=%{_libexecdir}
+
+%if %{with docs}
+%{__make} -C docs install \
+	DESTDIR=$RPM_BUILD_ROOT \
+	PREFIX=%{_prefix} \
+	BINDIR=%{_bindir} \
+	LIBEXECDIR=%{_libexecdir}
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -54,4 +71,4 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc README.md  changelog.txt
 %attr(755,root,root) %{_bindir}/conmon
-%{_mandir}/man8/conmon.8*
+%{?with_docs:%{_mandir}/man8/conmon.8*}
