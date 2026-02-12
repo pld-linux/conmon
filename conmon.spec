@@ -1,9 +1,9 @@
 #
 # Conditional build:
-%bcond_without	docs		# Don't build man page (requires go arch)
+%bcond_without	doc		# man pages (requires go-md2man)
 #
 %ifarch x32
-%undefine	with_docs
+%undefine	with_doc
 %endif
 Summary:	OCI container runtime monitor
 Name:		conmon
@@ -16,7 +16,7 @@ Source0:	https://github.com/containers/conmon/archive/v%{version}/%{name}-%{vers
 # Source0-md5:	beea74914108dfc2ca7196b86a4905bf
 URL:		https://github.com/containers/conmon
 BuildRequires:	glib2-devel
-%{?with_docs:BuildRequires:	go-md2man}
+%{?with_doc:BuildRequires:	go-md2man}
 BuildRequires:	libseccomp-devel >= 2.5.2
 BuildRequires:	pkgconfig
 BuildRequires:	systemd-devel
@@ -40,7 +40,7 @@ install -d tools/build
 	CFLAGS="%{rpmcppflags} %{rpmcflags}" \
 	LDLAGS="%{rpmldflags}" \
 
-%if %{with docs}
+%if %{with doc}
 %{__make} docs \
 	GOMD2MAN=/usr/bin/go-md2man
 %endif
@@ -54,7 +54,7 @@ rm -rf $RPM_BUILD_ROOT
 	BINDIR=%{_bindir} \
 	LIBEXECDIR=%{_libexecdir}
 
-%if %{with docs}
+%if %{with doc}
 %{__make} -C docs install \
 	DESTDIR=$RPM_BUILD_ROOT \
 	PREFIX=%{_prefix} \
@@ -69,4 +69,4 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc README.md  changelog.txt
 %attr(755,root,root) %{_bindir}/conmon
-%{?with_docs:%{_mandir}/man8/conmon.8*}
+%{?with_doc:%{_mandir}/man8/conmon.8*}
